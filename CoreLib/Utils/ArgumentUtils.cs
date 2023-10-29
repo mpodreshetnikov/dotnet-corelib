@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Numerics;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CoreLib.Utils;
 
@@ -47,7 +46,7 @@ public static class ArgumentUtils
     }
 
     public static void MustBePositive<T>(T argument, string name, string message = "Must be positive.")
-        where T: INumber<T>
+        where T : INumber<T>
     {
         if (T.Sign(argument) <= 0)
         {
