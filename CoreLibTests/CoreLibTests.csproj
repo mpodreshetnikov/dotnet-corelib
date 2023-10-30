@@ -27,4 +27,8 @@
     <ProjectReference Include="..\CoreLib\CoreLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EntityFramework\Encryption\" />
+  </ItemGroup>
+
 </Project>

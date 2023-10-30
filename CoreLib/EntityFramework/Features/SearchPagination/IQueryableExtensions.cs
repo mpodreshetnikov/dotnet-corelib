@@ -68,9 +68,10 @@ public static class IQueryableExtensions
             this IQueryable<T> query, ISearchQuery searchQuery,
             params Expression<Func<T, string?>>[] propsToSearch)
     {
-        ArgumentUtils.AllMustBeNotNull(propsToSearch, nameof(propsToSearch));
+        propsToSearch.MustContainsAtLeast(1, nameof(propsToSearch));
+        propsToSearch.AllElementsMustBeNotNull(nameof(propsToSearch));
 
-        if (OrderingReflectionUtils.IsQueryOrdered(query) == false)
+        if (ReflectionUtils.IsQueryOrdered(query) == false)
         {
             throw new ArgumentException("Query must be ordered before using this method.", nameof(query));
         }

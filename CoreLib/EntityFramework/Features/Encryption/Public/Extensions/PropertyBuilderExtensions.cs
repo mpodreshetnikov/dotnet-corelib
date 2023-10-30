@@ -20,8 +20,8 @@ public static class PropertyBuilderExtensions
     /// <param name="migrationType">Type of Migration that property started to be encrypted from.</param>
     public static PropertyBuilder EncryptedWith(this PropertyBuilder<string> propertyBuilder, ICryptoConverter cryptoConverter, int? maxLength = default, Type migrationType = default!)
     {
-        ArgumentUtils.ThrowIfNull(propertyBuilder, nameof(propertyBuilder));
-        ArgumentUtils.ThrowIfNull(cryptoConverter, nameof(cryptoConverter));
+        ArgumentUtils.MustBeNotNull(propertyBuilder, nameof(propertyBuilder));
+        ArgumentUtils.MustBeNotNull(cryptoConverter, nameof(cryptoConverter));
 
         MigrationAttribute? migrationAttribute = default!;
         if (migrationType is not null)

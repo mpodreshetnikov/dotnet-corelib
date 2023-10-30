@@ -29,19 +29,31 @@ public static class ArgumentUtils
         }
     }
 
-    public static void AllMustBeNotNull<T>(T argument, string name)
-        where T : IEnumerable
+    public static void AllElementsMustBeNotNull<T>(this IEnumerable<T> argument, string argumentName)
     {
         if (argument is null)
         {
-            throw new ArgumentNullException(name);
+            return;
         }
         foreach (var element in argument)
         {
             if (element is null)
             {
-                throw new ArgumentException($"All elements of {name} must be not null.", name);
+                throw new ArgumentException($"All elements of {argumentName} must be not null.", argumentName);
             }
+        }
+    }
+
+    public static void MustContainsAtLeast<T>(this IEnumerable<T> argument, long count, string argumentName)
+    {
+        MustBePositiveOrZero(count, nameof(count));
+        if (argument is null)
+        {
+            throw new ArgumentNullException(argumentName);
+        }
+        if (argument.LongCount() < count)
+        {
+            throw new ArgumentException($"{argumentName} must contains at least {count} elements.", argumentName);
         }
     }
 
