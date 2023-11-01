@@ -28,7 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EntityFramework\Encryption\" />
+    <None Remove="EntityFramework\Features\" />
+    <None Remove="EntityFramework\Features\SearchPagination\" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Folder Include="EntityFramework\Features\" />
+    <Folder Include="EntityFramework\Features\SearchPagination\" />
+  </ItemGroup>
 </Project>

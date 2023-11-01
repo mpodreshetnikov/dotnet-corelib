@@ -5,6 +5,8 @@ namespace EfCoreExtensionTests.Utils;
 
 public class AtomicUtilsTests
 {
+    #region SafelyJoin
+
     [Fact]
     public void SafelyJoin_JoinWithEmptyOne_AllExludeEmptyOne()
     {
@@ -30,4 +32,6 @@ public class AtomicUtilsTests
         // Assert
         strings.Should().BeEquivalentTo(expected);
     }
+
+    #endregion
 }

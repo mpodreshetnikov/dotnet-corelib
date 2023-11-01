@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace CoreLib.Utils;
 
@@ -10,13 +11,15 @@ public class ExpressionUtils
     /// </summary>
     /// <param name="memberAccessExpression">Lambda like: () => User.Address.City</param>
     /// <param name="defaultValue">Default value like: "DefaultCity"</param>
-    /// <param name="newParameterExpression">???</param>
+    /// <param name="newParameterExpression">Expression to be used as a root for the member accessors chain.</param>
     /// <exception cref="InvalidOperationException"></exception>
-    public static Expression GetNestedMemberOrDefault<TOut>
-            (LambdaExpression memberAccessExpression, TOut defaultValue, ParameterExpression newParameterExpression = default!)
+    public static Expression<Func<TIn, TOut>> GetNestedMemberOrDefault<TIn, TOut>
+            (Expression<Func<TIn, TOut>> memberAccessExpression,
+            TOut defaultValue,
+            ParameterExpression newParameterExpression = default!)
     {
         ArgumentUtils.MustBeNotNull(memberAccessExpression, nameof(memberAccessExpression));
-
+        
         if (memberAccessExpression.Body is not MemberExpression castedMemberAccessExpression)
         {
             throw new InvalidOperationException("Provided member access chain is invalid.");
@@ -31,15 +34,18 @@ public class ExpressionUtils
         }
         memberAccessors.Reverse();
 
-        var rootExpression = newParameterExpression
-            ?? (expression is ParameterExpression
-                ? expression
+        ParameterExpression rootExpression = newParameterExpression
+            ?? (expression is ParameterExpression parameterExpression
+                ? parameterExpression
                 : throw new InvalidOperationException("Provided member access chain is invalid."));
 
-        return MakeConditionalExpression(rootExpression, defaultValue, memberAccessors);
+        var conditionalExpression = MakeConditionalExpression(rootExpression, defaultValue, memberAccessors);
+
+        return Expression.Lambda<Func<TIn, TOut>>(conditionalExpression, rootExpression);
     }
 
-    public static Expression MakeConditionalExpression<TOut>(Expression expression, TOut defaultValue, IEnumerable<MemberExpression> memberExpressions)
+    private static Expression MakeConditionalExpression<TOut>(
+        Expression expression, TOut defaultValue, IEnumerable<MemberExpression> memberExpressions)
     {
         if (!memberExpressions.Any())
         {
