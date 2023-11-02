@@ -52,8 +52,8 @@ public class ExpressionUtils
             return expression;
         }
 
-        var testIsNullExpression = Expression.Equal(expression, Expression.Constant(null));
-        var ifTrueExpression = Expression.Constant(defaultValue);
+        var testIsNullExpression = Expression.Equal(expression, Expression.Constant(null!, expression.Type));
+        var ifTrueExpression = Expression.Constant(defaultValue, typeof(TOut));
         var ifFalseExpression = MakeConditionalExpression(
             Expression.MakeMemberAccess(expression, memberExpressions.First().Member),
             defaultValue,

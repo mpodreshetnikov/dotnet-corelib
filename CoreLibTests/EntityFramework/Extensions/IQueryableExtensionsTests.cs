@@ -1,10 +1,8 @@
 ﻿using Bogus;
-using System.Linq.Expressions;
-using CoreLib.Utils;
-using FluentAssertions;
 using CoreLib.EntityFramework.Extensions;
+using FluentAssertions;
 
-namespace EfCoreExtensionTests.Utils;
+namespace EfCoreExtensionTests.Utils.EntityFramework.Extensions;
 
 public class IQueryableExtensionsTests
 {
@@ -26,7 +24,25 @@ public class IQueryableExtensionsTests
     {
         // Arrange
         // 3 persons
-        var query = new Faker().MakeLazy(10, () => new Person()).AsQueryable();
+        var query = new Faker().Make(3, () => new Person()).AsQueryable();
+        query.ElementAt(1).Company = null;
+
+        // default value where company is null
+        var expected = new string[] { query.ElementAt(0).Company.Name, default!, query.ElementAt(2).Company.Name };
+
+        // Action
+        var actual = query.SelectOrDefault(person => person.Company.Name);
+
+        // Assert
+        actual.Should().Equal(expected);
+    }
+
+    [Fact]
+    public void SelectOrDefault_AccessQueryWithNullMemberAndSetDefaultValueManual_ReturnsDefaultValueWhereNull()
+    {
+        // Arrange
+        // 3 persons
+        var query = new Faker().Make(3, () => new Person()).AsQueryable();
         query.ElementAt(1).Company = null;
         var _default = "default";
 

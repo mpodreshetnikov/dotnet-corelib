@@ -4,7 +4,6 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -27,10 +26,6 @@
     <ProjectReference Include="..\CoreLib\CoreLib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="EntityFramework\Features\" />
-    <None Remove="EntityFramework\Features\SearchPagination\" />
-  </ItemGroup>
   <ItemGroup>
     <Folder Include="EntityFramework\Features\" />
     <Folder Include="EntityFramework\Features\SearchPagination\" />

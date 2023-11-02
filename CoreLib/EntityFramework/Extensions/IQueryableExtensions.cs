@@ -16,6 +16,6 @@ public static class IQueryableExtensions
         this IQueryable<TSource> query, Expression<Func<TSource, TResult>> selector, TResult defaultValue = default!)
     {
         var expression = ExpressionUtils.GetNestedMemberOrDefault(selector, defaultValue);
-        return query.Select(Expression.Lambda<Func<TSource, TResult>>(expression, selector.Parameters));
+        return query.Select(expression);
     }
 }
