@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace CoreLib.EntityFramework.Extensions;
 
-public static class IQueryableExtensions
+public static class QueryableExtensions
 {
     /// <summary>
     /// It's like: () => User?.Address?.City ?? "DefaultCity".
@@ -15,7 +15,7 @@ public static class IQueryableExtensions
     public static IQueryable<TResult> SelectOrDefault<TSource, TResult>(
         this IQueryable<TSource> query, Expression<Func<TSource, TResult>> selector, TResult defaultValue = default!)
     {
-        var expression = ExpressionUtils.GetNestedMemberOrDefault(selector, defaultValue);
+        var expression = ExpressionUtils.GetNestedMemberOrDefaultLambda(selector, defaultValue);
         return query.Select(expression);
     }
 }

@@ -13,7 +13,7 @@ public class ExpressionUtilsTests
         // Arrange
         Expression<Func<Person, string>> expression = (person) => person.FirstName + person.LastName;
         // Assert
-        FluentActions.Invoking(() => ExpressionUtils.GetNestedMemberOrDefault(expression, string.Empty))
+        FluentActions.Invoking(() => ExpressionUtils.GetNestedMemberOrDefaultLambda(expression, string.Empty))
             .Should().Throw<InvalidOperationException>();
     }
 
@@ -26,7 +26,7 @@ public class ExpressionUtilsTests
         var _default = "default";
 
         Expression<Func<Person, string>> expression = (person) => person.Company.Name;
-        var expressionToTest = ExpressionUtils.GetNestedMemberOrDefault(expression, _default);
+        var expressionToTest = ExpressionUtils.GetNestedMemberOrDefaultLambda(expression, _default);
         // Action
         var actual = expressionToTest.Compile().Invoke(person);
         // Assert
@@ -41,7 +41,7 @@ public class ExpressionUtilsTests
         var _default = "default";
 
         Expression<Func<Person, string>> expression = (person) => person.Company.Name;
-        var expressionToTest = ExpressionUtils.GetNestedMemberOrDefault(expression, _default);
+        var expressionToTest = ExpressionUtils.GetNestedMemberOrDefaultLambda(expression, _default);
         // Action
         var actual = expressionToTest.Compile().Invoke(person);
         // Assert

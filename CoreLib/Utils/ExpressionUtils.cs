@@ -12,13 +12,25 @@ public class ExpressionUtils
     /// <param name="defaultValue">Default value like: "DefaultCity"</param>
     /// <param name="newParameterExpression">Expression to be used as a root for the member accessors chain.</param>
     /// <exception cref="InvalidOperationException"></exception>
-    public static Expression<Func<TIn, TOut>> GetNestedMemberOrDefault<TIn, TOut>
+    public static Expression<Func<TIn, TOut>> GetNestedMemberOrDefaultLambda<TIn, TOut>
+            (Expression<Func<TIn, TOut>> memberAccessExpression,
+            TOut defaultValue,
+            ParameterExpression newParameterExpression = default!)
+    {
+        var (expression, rootExpression) = GetNestedMemberOrDefaultExpression(memberAccessExpression, defaultValue, newParameterExpression);
+        return Expression.Lambda<Func<TIn, TOut>>(expression, rootExpression);
+    }
+
+    /// <summary>
+    /// Returns (resultExpression, rootExpression) that allows to get member you need or default value if any of submember on the path will be null.
+    /// </summary>
+    internal static (Expression, ParameterExpression) GetNestedMemberOrDefaultExpression<TIn, TOut>
             (Expression<Func<TIn, TOut>> memberAccessExpression,
             TOut defaultValue,
             ParameterExpression newParameterExpression = default!)
     {
         ArgumentUtils.MustBeNotNull(memberAccessExpression, nameof(memberAccessExpression));
-        
+
         if (memberAccessExpression.Body is not MemberExpression castedMemberAccessExpression)
         {
             throw new InvalidOperationException("Provided member access chain is invalid.");
@@ -38,9 +50,7 @@ public class ExpressionUtils
                 ? parameterExpression
                 : throw new InvalidOperationException("Provided member access chain is invalid."));
 
-        var conditionalExpression = MakeConditionalExpression(rootExpression, defaultValue, memberAccessors);
-
-        return Expression.Lambda<Func<TIn, TOut>>(conditionalExpression, rootExpression);
+        return (MakeConditionalExpression(rootExpression, defaultValue, memberAccessors), rootExpression);
     }
 
     private static Expression MakeConditionalExpression<TOut>(
