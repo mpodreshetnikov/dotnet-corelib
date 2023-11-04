@@ -3,6 +3,7 @@ using System.Numerics;
 
 namespace CoreLib.Utils;
 
+// TODO: use something other like GUARD instead of manually written methods.
 public static class ArgumentUtils
 {
     /// <summary>
