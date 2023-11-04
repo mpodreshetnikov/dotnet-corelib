@@ -1,5 +1,4 @@
 ﻿using CoreLib.Utils;
-using FluentAssertions;
 
 namespace EfCoreExtensionTests.Utils;
 

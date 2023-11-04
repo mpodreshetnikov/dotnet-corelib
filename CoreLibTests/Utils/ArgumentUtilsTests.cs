@@ -1,20 +1,16 @@
-﻿using Bogus;
-using CoreLib.Utils;
-using FluentAssertions;
+﻿using CoreLib.Utils;
 
 namespace EfCoreExtensionTests.Utils;
 
 public class ArgumentUtilsTests
 {
-    public Faker Faker { get; set; } = new Faker();
-
     #region DefaultIfNull
 
     [Fact]
     public void DefaultIfNull_ReferenceArgumentNotNull_ArgumentNotChanged()
     {
         // Arrange
-        var argument = Faker.Person;
+        var argument = new Faker().Person;
         var linkToArgument = argument;
         // Action
         var actual = ArgumentUtils.DefaultIfNull(argument);
@@ -27,7 +23,7 @@ public class ArgumentUtilsTests
     public void DefaultIfNull_ValueArgumentNotNull_ArgumentNotChanged()
     {
         // Arrange
-        var argument = Faker.Random.Int();
+        var argument = new Faker().Random.Int();
         // Action
         var actual = ArgumentUtils.DefaultIfNull(argument);
         // Assert
@@ -39,7 +35,7 @@ public class ArgumentUtilsTests
     {
         // Arrange
         Person? argument = null;
-        var newArgument = Faker.Person;
+        var newArgument = new Faker().Person;
         // Action
         var actual = ArgumentUtils.DefaultIfNull(argument, newArgument);
         // Assert
@@ -51,7 +47,7 @@ public class ArgumentUtilsTests
     {
         // Arrange
         int? argument = null;
-        var newArgument = Faker.Random.Int();
+        var newArgument = new Faker().Random.Int();
         // Action
         var actual = ArgumentUtils.DefaultIfNull(argument, newArgument);
         // Assert
@@ -66,8 +62,8 @@ public class ArgumentUtilsTests
     public void MustBeNotNull_ArgumentNotNull_NotThrows()
     {
         // Arrange
-        var argument = Faker.Person;
-        var paramName = Faker.Random.String();
+        var argument = new Faker().Person;
+        var paramName = new Faker().Random.String();
         // Assert
         FluentActions.Invoking(() => ArgumentUtils.MustBeNotNull(argument, paramName))
             .Should().NotThrow();
@@ -78,7 +74,7 @@ public class ArgumentUtilsTests
     {
         // Arrange
         Person? argument = null;
-        var paramName = Faker.Random.String();
+        var paramName = new Faker().Random.String();
         // Assert
         FluentActions.Invoking(() => ArgumentUtils.MustBeNotNull(argument, paramName))
             .Should().Throw<ArgumentNullException>()

@@ -11,49 +11,67 @@ public static class IQueryableExtensions
     /// </summary>
     /// <returns>Query.</returns>
     public static IQueryable<T> ApplyPagination<T>(
-            this IQueryable<T> query, IPagedQuery paginatedQuery)
+            this IQueryable<T> query, IPagedQuery pagedQuery)
     {
-        if (paginatedQuery is null)
+        if (pagedQuery is null)
         {
             return query;
         }
 
-        if (paginatedQuery.Offset.HasValue)
+        if (pagedQuery.Offset.HasValue)
         {
-            query = query.Skip(paginatedQuery.Offset.Value);
+            query = query.Skip(pagedQuery.Offset.Value);
         }
-        if (paginatedQuery.Limit.HasValue)
+        if (pagedQuery.Limit.HasValue)
         {
-            query = query.Take(paginatedQuery.Limit.Value);
+            query = query.Take(pagedQuery.Limit.Value);
         }
 
         return query;
     }
 
     /// <summary>
-    /// Add pagination to the query and enumerates it.<br></br>
-    /// CAUTION: Don't use it with <see cref="ApplyPagination{T}(IQueryable{T}, IPagedQuery)"/>, it will double pagination.
+    /// Add pagination to the query and enumerate it.<br></br>
+    /// CAUTION: Set <paramref name="applyPagination"/> to false if used <see cref="ApplyPagination{T}(IQueryable{T}, IPagedQuery)"/>, otherwise it will double the pagination.
     /// </summary>
+    /// <param name="applyPagination">If true – use <see cref="ApplyPagination{T}(IQueryable{T}, IPagedQuery)"/> to the query.</param>
+    /// <param name="totalItemsRewrite">
+    /// Value to be set as "TotalItems" in <see cref="PagedResult{T}"/>.
+    /// Useful if query was already paginated to set actual total items quantity.
+    /// Required!!! if <paramref name="applyPagination"/> is false.
+    /// </param>
     /// <returns>Paged result</returns>
     /// <exception cref="ArgumentNullException"></exception>
     public static async Task<PagedResult<T>> AsPagedResultAsync<T>(
         this IQueryable<T> query,
-        IPagedQuery paginatedQuery,
-        CancellationToken cancellationToken = default)
+        IPagedQuery pagedQuery,
+        CancellationToken cancellationToken = default,
+        bool applyPagination = true,
+        long? totalItemsRewrite = null!)
     {
-        if (paginatedQuery is null)
+        if (pagedQuery is null)
         {
-            throw new ArgumentNullException(nameof(paginatedQuery));
+            throw new ArgumentNullException(nameof(pagedQuery));
         }
 
-        var paginatedQueryable = query.ApplyPagination(paginatedQuery);
+        if (applyPagination == false
+            && totalItemsRewrite is null)
+        {
+            throw new ArgumentNullException(nameof(totalItemsRewrite), "Required if 'applyPagination' is false");
+        }
+
+        var paginatedQueryable = query;
+        if (applyPagination)
+        {
+            paginatedQueryable = query.ApplyPagination(pagedQuery);
+        }
 
         return new PagedResult<T>()
         {
             Items = await paginatedQueryable.ToListAsync(cancellationToken),
-            ItemsOffset = paginatedQuery.Offset ?? 0,
+            ItemsOffset = pagedQuery.Offset ?? 0,
             ItemsQuantity = await paginatedQueryable.CountAsync(cancellationToken),
-            TotalItems = await query.CountAsync(cancellationToken),
+            TotalItems = totalItemsRewrite ?? await query.CountAsync(cancellationToken),
         };
     }
 

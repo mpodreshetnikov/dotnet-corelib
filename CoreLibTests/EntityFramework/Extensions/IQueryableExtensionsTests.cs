@@ -1,6 +1,4 @@
-﻿using Bogus;
-using CoreLib.EntityFramework.Extensions;
-using FluentAssertions;
+﻿using CoreLib.EntityFramework.Extensions;
 
 namespace EfCoreExtensionTests.Utils.EntityFramework.Extensions;
 

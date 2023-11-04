@@ -1,14 +1,10 @@
 ﻿using System.Linq.Expressions;
-using Bogus;
 using CoreLib.Utils;
-using FluentAssertions;
 
 namespace EfCoreExtensionTests.Utils;
 
 public class ExpressionUtilsTests
 {
-    public Faker Faker { get; set; } = new Faker();
-
     #region GetNestedMemberOrDefault
 
     [Fact]
@@ -25,7 +21,7 @@ public class ExpressionUtilsTests
     public void GetNestedMemberOrDefault_AccessNullValueMember_ReturnsDefault()
     {
         // Arrange
-        var person = Faker.Person;
+        var person = new Faker().Person;
         person.Company = null;
         var _default = "default";
 
@@ -41,7 +37,7 @@ public class ExpressionUtilsTests
     public void GetNestedMemberOrDefault_AccessNotNullValueMember_ReturnsValueMember()
     {
         // Arrange
-        var person = Faker.Person;
+        var person = new Faker().Person;
         var _default = "default";
 
         Expression<Func<Person, string>> expression = (person) => person.Company.Name;
