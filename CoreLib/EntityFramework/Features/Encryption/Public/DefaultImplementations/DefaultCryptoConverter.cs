@@ -16,7 +16,7 @@ public sealed class DefaultCryptoConverter : ICryptoConverter
     /// <summary>
     /// Constructor.
     /// </summary>
-    /// <param name="cryptKey">Encryption key.</param>
+    /// <param name="cryptKey">Encryption key. !!! Must be size one of: 16, 24, 32 symbols. !!!</param>
     /// <param name="authKey">Auth key.</param>
     public DefaultCryptoConverter(string cryptKey, string authKey)
     {

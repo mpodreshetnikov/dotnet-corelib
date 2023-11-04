@@ -7,6 +7,7 @@ namespace CoreLibTests.EntityFramework
     {
         public Guid Id { get; set; }
         public string? FullName { get; set; } = default!;
+        public string Password { get; set; } = "";
         public virtual Company? Company { get; set; }
 
         public static User Generate(Faker faker = null!)
@@ -15,6 +16,7 @@ namespace CoreLibTests.EntityFramework
             return new User
             {
                 FullName = faker.Name.FullName(),
+                Password = faker.Internet.Password(),
                 Company = Company.Generate(faker),
             };
         }
@@ -59,7 +61,15 @@ namespace CoreLibTests.EntityFramework
             return context;
         }
 
-        private SqliteConnection connection = new("Filename=:memory:");
+        public TestDbContext() : base()
+        {
+        }
+
+        public TestDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+        {
+        }
+
+        private readonly SqliteConnection connection = new("Filename=:memory:");
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
