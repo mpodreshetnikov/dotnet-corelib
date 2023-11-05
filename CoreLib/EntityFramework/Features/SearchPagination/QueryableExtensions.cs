@@ -15,14 +15,11 @@ public static class QueryableExtensions
     public static IQueryable<T> ApplyPagination<T>(
             this IQueryable<T> query, IPagedQuery pagedQuery)
     {
+        Defend.Against.NotOrderedQuery(query);
+
         if (pagedQuery is null)
         {
             return query;
-        }
-
-        if (ReflectionUtils.IsQueryOrdered(query) == false)
-        {
-            throw new ArgumentException("Query must be ordered before using this method.", nameof(query));
         }
 
         if (pagedQuery.Offset.HasValue)
