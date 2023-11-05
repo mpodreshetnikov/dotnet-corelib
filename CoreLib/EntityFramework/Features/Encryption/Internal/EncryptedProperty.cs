@@ -18,7 +18,7 @@ internal class EncryptedProperty
     public ICryptoConverter CryptoConverter { get; set; } = default!;
 
     /// <summary>
-    /// Max property value length.
+    /// Max property original value length (before encryption).
     /// </summary>
     public int? MaxLength { get; set; }
 

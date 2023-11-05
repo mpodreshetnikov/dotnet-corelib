@@ -1,4 +1,5 @@
 ﻿using CoreLib.EntityFramework.Features.Encryption;
+using CoreLib.EntityFramework.Features.Encryption.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreLibTests.EntityFramework.Features.Encryption;
@@ -50,13 +51,16 @@ public class PropertyBuilderExtensionsTests
 
     private async Task<EncryptedTestDbContext> SeedDbContext(
         ICryptoConverter cryptoConverter = null!,
-        IEnumerable<User> users = null!)
+        IEnumerable<User> users = null!,
+        int? maxLength = null!)
     {
         var cryptKey = new Faker().Internet.Password(16);
         var authKey = new Faker().Internet.Password();
         cryptoConverter ??= new DefaultCryptoConverter(cryptKey, authKey);
 
-        var dbContext = EncryptedTestDbContext.CreateContext(cryptoConverter);
+        var dbContext = EncryptedTestDbContext.CreateContext(
+            cryptoConverter,
+            maxLength ?? 20);
 
         var totalItems = 100;
         users ??= User.Generate(totalItems).ToList();
@@ -101,20 +105,37 @@ public class PropertyBuilderExtensionsTests
     }
 
     [Fact]
-    public async Task EncryptedWith_EncryptProperty_LengthOfEncryptedPropertyNoMoreThanPointed()
-    {
-
-    }
-
-    [Fact]
     public async Task EncryptedWith_EncryptProperty_OtherPropertiesNotEncrypted()
     {
+        // Arrange
+        var users = User.Generate(100).ToList();
+        var dbContext = await SeedDbContext(users: users);
 
+        var expectedUser = users.First();
+        var rawFullname = await dbContext.Database.SqlQuery<string>($"SELECT [FullName] as [Value] FROM [Users] WHERE [Id] = {expectedUser.Id}").SingleAsync();
+
+        // Assert
+        rawFullname.Should().Be(expectedUser.FullName);
     }
 
     [Fact]
     public async Task EncryptedWith_EncryptPropertyAndUseDifferentKeysToDecrypt_ThrowsException()
     {
+        // Arrange
+        var cryptKey = new Faker().Internet.Password(16);
+        var authKey = new Faker().Internet.Password();
+        var anotherCryptoConverter = new DefaultCryptoConverter(cryptKey, authKey);
 
+        var users = User.Generate(100).ToList();
+        // use here default crypto converter
+        var dbContext = await SeedDbContext(users: users);
+
+        var expectedUser = users.First();
+        var rawPassword = await dbContext.Database.SqlQuery<string>($"SELECT [Password] as [Value] FROM [Users] WHERE [Id] = {expectedUser.Id}").SingleAsync();
+        
+        // Assert
+        rawPassword.Should().NotBe(expectedUser.Password);
+        FluentActions.Invoking(() => anotherCryptoConverter.Decrypt(rawPassword))
+            .Should().Throw<DecryptionException>();
     }
 }

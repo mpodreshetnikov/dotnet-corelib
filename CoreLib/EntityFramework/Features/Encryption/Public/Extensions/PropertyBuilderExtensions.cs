@@ -15,10 +15,14 @@ public static class PropertyBuilderExtensions
     /// !!! In this case ensure that you call <see cref="DatabaseFacadeExtensions.MigrateWithEncryptingMigrator"/> or <see cref="DatabaseFacadeExtensions.MigrateWithEncryptingMigratorAsync"/> on the database context.
     /// </summary>
     /// <param name="propertyBuilder">Property builder.</param>
-    /// <param name="maxLength">Max length of the encrypted property.</param>
+    /// <param name="maxLength">Max possible length of the original property value. It will allow to count max encrypted property length and set database restrictions on that.</param>
     /// <param name="cryptoConverter">Crypto converter.</param>
     /// <param name="migrationType">Type of Migration that property started to be encrypted from.</param>
-    public static PropertyBuilder EncryptedWith(this PropertyBuilder<string> propertyBuilder, ICryptoConverter cryptoConverter, int? maxLength = default, Type migrationType = default!)
+    public static PropertyBuilder EncryptedWith(
+        this PropertyBuilder<string> propertyBuilder,
+        ICryptoConverter cryptoConverter,
+        int? maxLength = default,
+        Type migrationType = default!)
     {
         ArgumentUtils.MustBeNotNull(propertyBuilder, nameof(propertyBuilder));
         ArgumentUtils.MustBeNotNull(cryptoConverter, nameof(cryptoConverter));
