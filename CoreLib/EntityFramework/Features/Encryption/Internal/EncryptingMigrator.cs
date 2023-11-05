@@ -35,14 +35,6 @@ internal static class EncryptingMigrator
         }
     }
 
-    internal static void MigrateWithEncriptingMigrator(DatabaseFacade databaseFacade)
-    {
-        var dbContext = (databaseFacade as IDatabaseFacadeDependenciesAccessor).Context;
-        pendingMigrations = dbContext.Database.GetPendingMigrations();
-        databaseFacade.Migrate();
-        MigrateEncryptedPropertiesAsync(dbContext).GetAwaiter().GetResult();
-    }
-
     internal static async Task MigrateWithEncriptingMigratorAsync(DatabaseFacade databaseFacade, CancellationToken cancellationToken = default)
     {
         var dbContext = (databaseFacade as IDatabaseFacadeDependenciesAccessor).Context;

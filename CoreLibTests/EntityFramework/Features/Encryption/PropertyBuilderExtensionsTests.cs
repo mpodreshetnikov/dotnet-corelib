@@ -132,7 +132,7 @@ public class PropertyBuilderExtensionsTests
 
         var expectedUser = users.First();
         var rawPassword = await dbContext.Database.SqlQuery<string>($"SELECT [Password] as [Value] FROM [Users] WHERE [Id] = {expectedUser.Id}").SingleAsync();
-        
+
         // Assert
         rawPassword.Should().NotBe(expectedUser.Password);
         FluentActions.Invoking(() => anotherCryptoConverter.Decrypt(rawPassword))
