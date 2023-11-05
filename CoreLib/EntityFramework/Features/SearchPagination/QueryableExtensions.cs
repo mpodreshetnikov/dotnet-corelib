@@ -1,4 +1,5 @@
-﻿using CoreLib.Utils;
+﻿using Ardalis.GuardClauses;
+using CoreLib.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -56,18 +57,11 @@ public static class QueryableExtensions
         long? totalItemsRewrite = null!,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(nameof(query));
-
-        if (ReflectionUtils.IsQueryOrdered(query) == false)
-        {
-            throw new ArgumentException("Query must be ordered before using this method.", nameof(query));
-        }
-
-        if (applyPagination == false
-            && totalItemsRewrite is null)
-        {
-            throw new ArgumentNullException(nameof(totalItemsRewrite), "Required if 'applyPagination' is false");
-        }
+        Defend.Against.Null(query);
+        Defend.Against.Null(pagedQuery);
+        Defend.Against.NotOrderedQuery(query);
+        if (applyPagination == false)
+            Defend.Against.Null(totalItemsRewrite, message: $"Input {nameof(totalItemsRewrite)} required if {nameof(applyPagination)} is false");
 
         var paginatedQueryable = query;
         if (applyPagination)
@@ -95,8 +89,8 @@ public static class QueryableExtensions
             ISearchQuery searchQuery,
             params Expression<Func<T, string?>>[] propsToSearch)
     {
-        propsToSearch.MustContainsAtLeast(1, nameof(propsToSearch));
-        propsToSearch.AllElementsMustBeNotNull(nameof(propsToSearch));
+        Defend.Against.LessElementsQuantity(propsToSearch, 1);
+        Defend.Against.NullElements(propsToSearch);
 
         if (searchQuery is null || string.IsNullOrEmpty(searchQuery.SearchQuery))
         {

@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Ardalis.GuardClauses;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace CoreLib.Utils;
@@ -29,7 +30,7 @@ public static class ReflectionUtils
     /// </summary>
     public static bool IsQueryOrdered(IQueryable query)
     {
-        ArgumentNullException.ThrowIfNull(query, nameof(query));
+        Defend.Against.Null(query);
 
         var visitor = new OrderingTester();
         visitor.Visit(query.Expression);

@@ -1,4 +1,6 @@
-﻿using CoreLib.EntityFramework.Features.Encryption.Exceptions;
+﻿using Ardalis.GuardClauses;
+using CoreLib.EntityFramework.Features.Encryption.Exceptions;
+using CoreLib.Utils;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -19,8 +21,9 @@ public sealed class DefaultCryptoConverter : ICryptoConverter
     /// <param name="authKey">Auth key.</param>
     public DefaultCryptoConverter(string cryptKey, string authKey)
     {
-        ArgumentException.ThrowIfNullOrEmpty(cryptKey, nameof(cryptKey));
-        ArgumentException.ThrowIfNullOrEmpty(authKey, nameof(authKey));
+        Defend.Against.NullOrEmpty(authKey);
+        Defend.Against.NullOrInvalidInput(cryptKey, nameof(cryptKey),
+            key => new[] { 16, 24, 32 }.Contains(key.Length), "Size of encryption key must be one of: 16, 24, 32.");
 
         this.cryptKey = Encoding.UTF8.GetBytes(cryptKey);
         this.authKey = Encoding.UTF8.GetBytes(authKey);

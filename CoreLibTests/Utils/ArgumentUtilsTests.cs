@@ -13,7 +13,7 @@ public class ArgumentUtilsTests
         var argument = new Faker().Person;
         var linkToArgument = argument;
         // Action
-        var actual = ArgumentUtils.DefaultIfNull(argument);
+        var actual = Defend.Against.NullOrReturnDefault(argument);
         // Assert
         actual.Should().Be(argument);
         linkToArgument.Should().Be(argument);
@@ -25,7 +25,7 @@ public class ArgumentUtilsTests
         // Arrange
         var argument = new Faker().Random.Int();
         // Action
-        var actual = ArgumentUtils.DefaultIfNull(argument);
+        var actual = Defend.Against.NullOrReturnDefault(argument);
         // Assert
         actual.Should().Be(argument);
     }
@@ -37,7 +37,7 @@ public class ArgumentUtilsTests
         Person? argument = null;
         var newArgument = new Faker().Person;
         // Action
-        var actual = ArgumentUtils.DefaultIfNull(argument, newArgument);
+        var actual = Defend.Against.NullOrReturnDefault(argument, newArgument);
         // Assert
         actual.Should().Be(newArgument);
     }
@@ -49,7 +49,7 @@ public class ArgumentUtilsTests
         int? argument = null;
         var newArgument = new Faker().Random.Int();
         // Action
-        var actual = ArgumentUtils.DefaultIfNull(argument, newArgument);
+        var actual = Defend.Against.NullOrReturnDefault(argument, newArgument);
         // Assert
         actual.Should().Be(newArgument);
     }

@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Ardalis.GuardClauses;
+using System.Linq.Expressions;
 
 namespace CoreLib.Utils;
 
@@ -29,7 +30,7 @@ public class ExpressionUtils
             TOut defaultValue,
             ParameterExpression newParameterExpression = default!)
     {
-        ArgumentNullException.ThrowIfNull(memberAccessExpression, nameof(memberAccessExpression));
+        Defend.Against.Null(memberAccessExpression);
 
         if (memberAccessExpression.Body is not MemberExpression castedMemberAccessExpression)
         {

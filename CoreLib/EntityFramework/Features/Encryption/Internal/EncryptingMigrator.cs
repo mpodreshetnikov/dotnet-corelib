@@ -1,4 +1,5 @@
-﻿using CoreLib.Utils;
+﻿using Ardalis.GuardClauses;
+using CoreLib.Utils;
 using ECoreLib.EntityFramework.Features.Encryption.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -17,7 +18,7 @@ internal static class EncryptingMigrator
 
     internal static void AddEncryptedProperty(EncryptedProperty encryptedProperty)
     {
-        ArgumentNullException.ThrowIfNull(encryptedProperty, nameof(encryptedProperty));
+        Defend.Against.Null(encryptedProperty);
         AddConverters(encryptedProperty);
         EncryptedProperties.Add(encryptedProperty);
     }

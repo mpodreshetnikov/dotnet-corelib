@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using Ardalis.GuardClauses;
+using CoreLib.Utils;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace CoreLib.EntityFramework.Features.Encryption;
 
@@ -11,7 +13,7 @@ public static class DatabaseFacadeExtensions
     /// </summary>
     public static Task MigrateWithEncryptingMigratorAsync(this DatabaseFacade databaseFacade, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(databaseFacade, nameof(databaseFacade));
+        Defend.Against.Null(databaseFacade);
         return EncryptingMigrator.MigrateWithEncriptingMigratorAsync(databaseFacade, cancellationToken);
     }
 }

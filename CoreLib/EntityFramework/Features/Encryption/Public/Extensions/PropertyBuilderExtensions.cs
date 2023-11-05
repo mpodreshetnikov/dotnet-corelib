@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Ardalis.GuardClauses;
+using CoreLib.Utils;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CoreLib.EntityFramework.Features.Encryption;
@@ -23,8 +25,8 @@ public static class PropertyBuilderExtensions
         int? maxLength = default,
         Type migrationType = default!)
     {
-        ArgumentNullException.ThrowIfNull(propertyBuilder, nameof(propertyBuilder));
-        ArgumentNullException.ThrowIfNull(cryptoConverter, nameof(cryptoConverter));
+        Defend.Against.Null(propertyBuilder);
+        Defend.Against.Null(cryptoConverter);
 
         MigrationAttribute? migrationAttribute = default!;
         if (migrationType is not null)
@@ -38,10 +40,8 @@ public static class PropertyBuilderExtensions
                 .GetCustomAttributes(typeof(MigrationAttribute), true)
                 .SingleOrDefault()
                 as MigrationAttribute;
-            if (migrationAttribute is null)
-            {
-                throw new ArgumentException("Provided Migration type has no MigrationAttribute.", nameof(migrationType));
-            }
+
+            Defend.Against.Null(migrationAttribute, message: "Provided Migration type has no MigrationAttribute.");
         }
 
         // Add this value converter into migration query.
