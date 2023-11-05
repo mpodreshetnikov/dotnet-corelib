@@ -1,5 +1,4 @@
 ﻿using CoreLib.EntityFramework.Features.Encryption.Exceptions;
-using CoreLib.Utils;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -20,8 +19,8 @@ public sealed class DefaultCryptoConverter : ICryptoConverter
     /// <param name="authKey">Auth key.</param>
     public DefaultCryptoConverter(string cryptKey, string authKey)
     {
-        ArgumentUtils.MustBeNotNull(cryptKey, nameof(cryptKey));
-        ArgumentUtils.MustBeNotNull(authKey, nameof(authKey));
+        ArgumentException.ThrowIfNullOrEmpty(cryptKey, nameof(cryptKey));
+        ArgumentException.ThrowIfNullOrEmpty(authKey, nameof(authKey));
 
         this.cryptKey = Encoding.UTF8.GetBytes(cryptKey);
         this.authKey = Encoding.UTF8.GetBytes(authKey);

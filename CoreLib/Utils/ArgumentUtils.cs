@@ -18,18 +18,6 @@ public static class ArgumentUtils
         return argument;
     }
 
-    /// <summary>
-    /// Throws <see cref="ArgumentNullException"/> if argument is null.
-    /// </summary>
-    /// <param name="name">Name of argument: <see cref="nameof"/></param>
-    public static void MustBeNotNull<T>(T argument, string name)
-    {
-        if (argument is null)
-        {
-            throw new ArgumentNullException(name);
-        }
-    }
-
     public static void AllElementsMustBeNotNull<T>(this IEnumerable<T> argument, string argumentName)
     {
         if (argument is null)

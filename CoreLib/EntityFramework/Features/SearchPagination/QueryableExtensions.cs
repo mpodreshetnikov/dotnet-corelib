@@ -56,10 +56,7 @@ public static class QueryableExtensions
         long? totalItemsRewrite = null!,
         CancellationToken cancellationToken = default)
     {
-        if (pagedQuery is null)
-        {
-            throw new ArgumentNullException(nameof(pagedQuery));
-        }
+        ArgumentNullException.ThrowIfNull(nameof(query));
 
         if (ReflectionUtils.IsQueryOrdered(query) == false)
         {

@@ -1,5 +1,4 @@
-﻿using CoreLib.Utils;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CoreLib.EntityFramework.Features.Encryption;
@@ -24,8 +23,8 @@ public static class PropertyBuilderExtensions
         int? maxLength = default,
         Type migrationType = default!)
     {
-        ArgumentUtils.MustBeNotNull(propertyBuilder, nameof(propertyBuilder));
-        ArgumentUtils.MustBeNotNull(cryptoConverter, nameof(cryptoConverter));
+        ArgumentNullException.ThrowIfNull(propertyBuilder, nameof(propertyBuilder));
+        ArgumentNullException.ThrowIfNull(cryptoConverter, nameof(cryptoConverter));
 
         MigrationAttribute? migrationAttribute = default!;
         if (migrationType is not null)

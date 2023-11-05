@@ -29,7 +29,7 @@ public static class ReflectionUtils
     /// </summary>
     public static bool IsQueryOrdered(IQueryable query)
     {
-        ArgumentUtils.MustBeNotNull(query, nameof(query));
+        ArgumentNullException.ThrowIfNull(query, nameof(query));
 
         var visitor = new OrderingTester();
         visitor.Visit(query.Expression);

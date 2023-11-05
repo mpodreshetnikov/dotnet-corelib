@@ -17,7 +17,7 @@ internal static class EncryptingMigrator
 
     internal static void AddEncryptedProperty(EncryptedProperty encryptedProperty)
     {
-        ArgumentUtils.MustBeNotNull(encryptedProperty, nameof(encryptedProperty));
+        ArgumentNullException.ThrowIfNull(encryptedProperty, nameof(encryptedProperty));
         AddConverters(encryptedProperty);
         EncryptedProperties.Add(encryptedProperty);
     }

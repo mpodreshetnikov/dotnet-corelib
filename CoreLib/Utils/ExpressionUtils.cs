@@ -29,7 +29,7 @@ public class ExpressionUtils
             TOut defaultValue,
             ParameterExpression newParameterExpression = default!)
     {
-        ArgumentUtils.MustBeNotNull(memberAccessExpression, nameof(memberAccessExpression));
+        ArgumentNullException.ThrowIfNull(memberAccessExpression, nameof(memberAccessExpression));
 
         if (memberAccessExpression.Body is not MemberExpression castedMemberAccessExpression)
         {

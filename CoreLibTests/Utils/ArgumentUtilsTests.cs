@@ -55,31 +55,4 @@ public class ArgumentUtilsTests
     }
 
     #endregion
-
-    #region MustBeNotNull
-
-    [Fact]
-    public void MustBeNotNull_ArgumentNotNull_NotThrows()
-    {
-        // Arrange
-        var argument = new Faker().Person;
-        var paramName = new Faker().Random.String();
-        // Assert
-        FluentActions.Invoking(() => ArgumentUtils.MustBeNotNull(argument, paramName))
-            .Should().NotThrow();
-    }
-
-    [Fact]
-    public void MustBeNotNull_ArgumentIsNull_Throws()
-    {
-        // Arrange
-        Person? argument = null;
-        var paramName = new Faker().Random.String();
-        // Assert
-        FluentActions.Invoking(() => ArgumentUtils.MustBeNotNull(argument, paramName))
-            .Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be(paramName);
-    }
-
-    #endregion
 }
