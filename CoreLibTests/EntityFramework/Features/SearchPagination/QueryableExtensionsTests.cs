@@ -8,13 +8,13 @@ public class QueryableExtensionsTests
     #region ApplyPagination
 
     [Fact]
-    public async Task ApplyPagination_NullQuery_NotPaginated()
+    public async Task ApplyPagination_NullOrderedQuery_NotPaginated()
     {
         // Arrange
         var dbContext = TestDbContext.CreateContext();
         await dbContext.Users.AddRangeAsync(User.Generate(100));
         await dbContext.SaveChangesAsync();
-        var query = dbContext.Users;
+        var query = dbContext.Users.OrderBy(x => x.FullName);
 
         var expected = query;
         // Action
