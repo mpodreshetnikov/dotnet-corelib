@@ -1,0 +1,75 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  BuildConfiguration: 'Release'
+  ArtifactNugetName: 'Core.DotNet'
+
+stages:
+- stage: setup_environment
+  displayName: 'Setup Environment'
+  jobs:
+  - job: setup_dotnet
+    displayName: 'Setup DotNet SDK and Runtime'    
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '7.x'
+- stage: build
+  dependsOn: setup_environment
+  displayName: 'Build Nuget Package'
+  jobs:
+  - job: build_package
+    displayName: 'Build Nuget Package'    
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore packages'
+      inputs:
+        command: 'restore'
+        projects: 'CoreLib/CoreLib.csproj'
+        feedsToUse: 'select'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build solution'
+      inputs:
+        command: 'build'
+        projects: 'CoreLib/CoreLib.csproj'
+        arguments: '-c $(BuildConfiguration) --no-restore'
+- stage: test
+  dependsOn: build
+  displayName: 'Run tests on the package'
+  jobs:
+    - job: run_tests
+      displayName: 'Run tests on the package'
+      steps:
+      - task: DotNetCoreCLI@2
+        displayName: 'Run tests on the package'
+        inputs:
+          command: 'test'
+          projects: 'CoreLibTests/CoreLibTests.csproj'
+- stage: publish
+  dependsOn: test
+  displayName: 'Publish package to Nexus Nuget Feed'
+  jobs:
+    - job: publish
+      displayName: 'Publish package to Nexus Nuget Feed'
+      steps:
+      - task: DotNetCoreCLI@2
+        displayName: 'Create Nuget package'
+        inputs:
+          command: 'pack'
+          packagesToPack: 'CoreLib/CoreLib.csproj'
+          packDirectory: '$(Build.ArtifactStagingDirectory)/packages/nuget'
+          nobuild: true
+          versioningScheme: 'off'
+          includesymbols: true
+      - task: DotNetCoreCLI@2
+        displayName: "Publish Nuget package to Nexus Nuget Feed"
+        inputs:
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/packages/nuget/*.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '7f81e2b9-c395-43a6-a97b-80a3287af188'
