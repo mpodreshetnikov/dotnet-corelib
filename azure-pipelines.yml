@@ -9,7 +9,18 @@ variables:
   ArtifactNugetName: 'Core.DotNet'
 
 stages:
+- stage: setup_environment
+  displayName: 'Setup Environment'
+  jobs:
+  - job: setup_dotnet
+    displayName: 'Setup DotNet SDK and Runtime'    
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '7.x'
 - stage: build
+  dependsOn: setup_environment
   displayName: 'Build Nuget Package'
   jobs:
   - job: build_package
@@ -38,7 +49,7 @@ stages:
         displayName: 'Run tests on the package'
         inputs:
           command: 'test'
-          projects: 'CoreLib/CoreLib.csproj'
+          projects: 'CoreLibTests/CoreLibTests.csproj'
 - stage: publish
   dependsOn: test
   displayName: 'Publish package to Nexus Nuget Feed'
