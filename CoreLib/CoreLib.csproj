@@ -4,6 +4,11 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+	
+	    <PackageId>Core.DotNet</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>Maxim Podreshetnikov</Authors>
+        <Company>Solution Factory</Company>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,7 +16,6 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.13" />
     </ItemGroup>
-
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="CoreLibTests" />
